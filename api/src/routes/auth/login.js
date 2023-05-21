@@ -1,6 +1,7 @@
 const { query } = require('express');
 const express = require('express');
 const router = express.Router();
+const bcrypt = require("bcrypt");
 require('dotenv').config();
 
 const mysql = require('mysql2');
@@ -25,10 +26,17 @@ router.post('/', async (req, res) => {
         connection.query(
             query,
             function(err, results, fields) {
-                if (results.length > 0 && results[0].password == data.password) {
-                    const token = jwt.sign(results[0], process.env.SECRET, { expiresIn: '1800s' });
-                    console.log('New log in: ' + token);
-                    res.send({'token': token});
+                if (results.length > 0) {
+                    bcrypt.compare(data.password, results[0].password, function(err, result) {
+                        if (result) {
+                            const token = jwt.sign(results[0], process.env.SECRET, { expiresIn: '1800s' });
+                            console.log('New log in: ' + token);
+                            res.send({'token': token});
+                        }
+                        else {
+                            res.send(status);
+                        }
+                    });
                 }
                 else {
                     res.send(status);

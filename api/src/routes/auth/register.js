@@ -1,6 +1,7 @@
 const { query } = require('express');
 const express = require('express');
 const router = express.Router();
+const bcrypt = require("bcrypt");
 
 require('dotenv').config();
 
@@ -27,18 +28,22 @@ router.post('/', async (req, res) => {
             query,
             function(err, results, fields) {
                 if (results.length > 0) {
-                    console.log('nop')
                     res.send(status);
                 }
                 else {
-                    query = "INSERT INTO user VALUES (NULL, '" + data.email + "', '" + data.password + "', '" + data.firstname + "', '" + data.name + "', CURRENT_TIMESTAMP);";
-                    connection.query(
-                        query,
-                        function(err, results, fields) {
-                            const token = jwt.sign(data, process.env.SECRET, { expiresIn: '1800s' });
-                            res.send({'token': token});
+                    bcrypt.hash(data.password, 10, function(err, hash) {
+                        if (err) console.log('hash err: ' + err);
+                        else {
+                            query = "INSERT INTO user VALUES (NULL, '" + data.email + "', '" + hash + "', '" + data.firstname + "', '" + data.name + "', CURRENT_TIMESTAMP);";
+                            connection.query(
+                                query,
+                                function(err, results, fields) {
+                                    const token = jwt.sign(data, process.env.SECRET, { expiresIn: '1800s' });
+                                    res.send({'token': token});
+                                }
+                            )
                         }
-                    )
+                    });
                 }
             }
         );
