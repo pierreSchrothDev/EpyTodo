@@ -14,6 +14,7 @@
     "moment": "^2.29.4",
     "mysql2": "^3.2.4",
     "node-polyfill-webpack-plugin": "^2.0.1",
+    "nodemon": "^2.0.22",
     "process": "^0.11.10",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -45,5 +46,9 @@
   "devDependencies": {
     "react-app-rewired": "^2.2.1",
     "react-router-dom": "^6.11.0"
-  }
+  },
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC"
 }
